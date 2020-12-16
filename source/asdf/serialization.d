@@ -1522,14 +1522,10 @@ void serializeValue(S, V)(ref S serializer, auto ref V value)
         value.serialize(serializer);
     }
     else
-    static if(__traits(hasMember, V, "toString"))
+    static if(aliasSeqOf!(SerializableMembers!V).length == 0)
     {
-        serializer.putValue(value.toString);
-    }
-    else
-    static if(__traits(hasMember, V, "getRawValue"))
-    {
-        serializer.putValue(value.getRawValue);
+        import std.conv : to;
+        serializer.putValue(value.to!string);
     }
     else
     {
