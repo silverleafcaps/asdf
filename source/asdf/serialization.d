@@ -1557,6 +1557,12 @@ void serializeValue(S, V)(ref S serializer, auto ref V value)
         value.serialize(serializer);
     }
     else
+    static if(aliasSeqOf!(SerializableMembers!V).length == 0)
+    {
+        import std.conv : to;
+        serializer.putValue(value.to!string);
+    }
+    else
     {
         auto state = serializer.objectBegin();
         foreach(member; aliasSeqOf!(SerializableMembers!V))
